@@ -11,3 +11,5 @@ Scripts available:
  As an example we used this to check if a list of samples in a spreadsheet have been all sequenced (i.e. creating a column from the folder containing the assembled sequences (ls *.fasta > sequences.txt)
 
 2) bulk_remove_brackets: does what it says, remove brackets from sequences (or other files) names.
+
+3) raw_seq_copier: Copy raw sequences R1 and R2 from different folders to a folder of choice (modify the script with destination folder). It takes as an argument a tab separated file called list.txt where in the first column you put all your samples (just the names not all sequence name i.e. for sample1_R1_001.fastq.gz and sample1_R1_001.fastq.gz the first column will contain just sample1), the second column contains the path.
