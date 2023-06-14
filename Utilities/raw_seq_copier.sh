@@ -4,7 +4,7 @@
 
 
 # Destination folder
-destination_folder="/home/guidocordoni/fsx/ranch-52/PATHSAFE_raw_meat/raw_seq"
+destination_folder="/insert/your/destination/path/here"
 
 
 # Read list.txt file line by line
