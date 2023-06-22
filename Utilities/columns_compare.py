@@ -1,5 +1,5 @@
 import pyfiglet
-
+# Made by Guido Cordoni guido.cordoni@apha.gov.uk
 graphic = pyfiglet.figlet_format("COLUMNS COMPARE V 1.0")
 print(graphic)
 print("This script will compare 2 columns in a list.txt file and will report:\n")
