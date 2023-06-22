@@ -1,7 +1,6 @@
 #!/bin/bash
-# This script copy raw sequences from different folders to a folder of choice. Ptovide a tab separated file with two columns :sample name and path. 
-
-
+# This script copy raw sequences from different folders to a folder of choice. Provide a tab separated file with two columns :sample name and path. 
+# Made by Guido Cordoni guido.cordoni@apha.gov.uk
 
 # Destination folder
 destination_folder="/insert/your/destination/path/here"
