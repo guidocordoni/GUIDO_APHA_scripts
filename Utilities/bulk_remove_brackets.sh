@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# Made by Guido Cordoni guido.cordoni@apha.gov.uk
 # Get the list of files in the current directory
 files=$(ls)
 
