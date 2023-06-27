@@ -1,28 +1,42 @@
-import gzip
-import os
-# This script is currently setted to take the first 1000 sequences from a set of fastq.gz sequences and save them in a folder (REDUCED_SEQ) creating fastq.gz files that have the same names of the original ones. You can modify the value 1000 below to the desidered number of sequences needed.
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jun 27 11:42:31 2023
+
+@author: guido.cordoni@apha.gov.uk
+"""
+# This script is currently setted to take 1000 sequences randomly selected using seqtk and multithread.  It takes fastq.gz files from an input folder of choice and save the reduced fastq.gz files in a folder of choice. The reduced files will have the same names of the original ones.
+#You can modify the value 1000 below to the desidered number of sequences needed.
 #Use this script to generate short sequences for testing pipelines or scripts on your personal SCE avoiding incurring in the costs of bigger SCE machines.
-# Made by Guido Cordoni guido.cordoni@apha.gov.uk
-def extract_first_1000_sequences(input_file, output_file):
-  with gzip.open(input_file, "rb") as f_in:
-    with gzip.open(output_file, "wb") as f_out:
-      for i in range(1000):
-        line = f_in.readline()
-        f_out.write(line)
+#Usage: python -i input_folder -o output folder. Use -h for help. 
+#Made by Guido Cordoni guido.cordoni@apha.gov.uk
+import os
+import sys
+import subprocess
+import argparse
+import concurrent.futures
 
-def main():
-#Inssert your input and output folder here
-  input_folder = "RAW_READS"
-  output_folder = "REDUCED_SEQ"
+# Parse command-line arguments
+parser = argparse.ArgumentParser(description="Reduce sequences using seqtk.")
+parser.add_argument("-i", "--input", help="Input folder path containing fastq.gz files.", required=True)
+parser.add_argument("-o", "--output", help="Output folder path for saving reduced sequences.", required=True)
+args = parser.parse_args()
 
-  if not os.path.exists(output_folder):
-    os.mkdir(output_folder)
+# Function to process a single fastq.gz file
+def process_file(file):
+    # Construct the input and output file paths
+    input_file = os.path.join(args.input, file)
+    output_file = os.path.join(args.output, file)
 
-  for input_file in os.listdir(input_folder):
-    if input_file.endswith(".fastq.gz"):
-      output_file = os.path.join(output_folder, input_file)
-      extract_first_1000_sequences(os.path.join(input_folder, input_file), output_file)
+    # Run seqtk to sample 1000 sequences from the input file and save it to the output file
+    subprocess.run(["seqtk", "sample", "-s100", input_file, "1000"], stdout=open(output_file, "w"), check=True)
 
-if __name__ == "__main__":
-  main()
+# Get a list of fastq.gz files in the input folder
+fastq_files = [file for file in os.listdir(args.input) if file.endswith(".fastq.gz")]
 
+# Create the output folder if it doesn't exist
+os.makedirs(args.output, exist_ok=True)
+
+# Process the fastq.gz files in parallel using multithreading
+with concurrent.futures.ThreadPoolExecutor() as executor:
+    executor.map(process_file, fastq_files)
