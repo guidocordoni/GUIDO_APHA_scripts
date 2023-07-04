@@ -18,3 +18,4 @@ Scripts available:
 You can modify the value 1000 below to the desidered number of sequences needed.
 Use this script to generate short sequences for testing pipelines or scripts on your personal SCE avoiding incurring in the costs of bigger SCE machines.
 Usage: python -i input_folder -o output folder. Use -h for help. 
+5) move_files_not_in_a_list: self explanatory modify the script with the .fasta folder, the list.txt folder and the destination folder. It will move all files not in the list into the destination folder.
