@@ -17,7 +17,7 @@ matrix_file = "dist_noERR_and_outliers.txt"  # Replace with the actual file path
 matrix_df = pd.read_csv(matrix_file, sep="\t", index_col=0)
 
 # Find couples with a distance <= 20
-couples_df = matrix_df[matrix_df <= 20].stack().reset_index()
+couples_df = matrix_df[matrix_df <= 20].stack().reset_index() #you can change the value <=20 according to the bacteria that you are investigating
 couples_df.columns = ["Clone1", "Clone2", "Distance"]
 
 # Filter out duplicates and self-identity couples
