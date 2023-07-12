@@ -19,6 +19,10 @@ matrix_df = pd.read_csv(matrix_file, sep="\t", index_col=0)
 # Find couples with a distance <= 20
 couples_df = matrix_df[matrix_df <= 20].stack().reset_index()
 couples_df.columns = ["Clone1", "Clone2", "Distance"]
+
+# Filter out duplicates and self-identity couples
+couples_df = couples_df[couples_df["Clone1"] < couples_df["Clone2"]]
+
 couples = couples_df[["Clone1", "Clone2", "Distance"]].values.tolist()
 
 # Save the list of couples with distances to a file
