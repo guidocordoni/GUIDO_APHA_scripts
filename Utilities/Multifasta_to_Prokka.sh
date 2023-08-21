@@ -1,10 +1,10 @@
 #!/bin/bash
-# Takes a multifasta file (i.e. Snippy full genome file) and run Procca on each sequence. Saves results in separated folders named after the sequences names
+# Takes a multifasta file (i.e. Snippy full genome file) and run Procca on each sequence. Saves results in separated folders named after the sequences names.
 # Path to the multifasta file
-genome_multifasta="/home/guidocordoni/fsx/ranch-44/Other_projects/guido/Enterococci/Aviagen/SnippyAug_2023/clean.full.fasta"
+genome_multifasta="your/path/clean.full.fasta" #update here
 
 # Output directory for Prokka annotations
-output_dir="/home/guidocordoni/fsx/ranch-44/Other_projects/guido/Enterococci/Aviagen/SnippyAug_2023/prokka_results"
+output_dir="your/path/prokka_results" #update here
 
 # Extract sample names from FASTA headers and iterate through them
 grep ">" $genome_multifasta | sed 's/>//' | while read sample_name; do
