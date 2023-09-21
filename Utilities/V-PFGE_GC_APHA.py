@@ -8,7 +8,7 @@ Created on Wed Sep 20 10:31:08 2023
 
 import os
 from Bio import SeqIO
-from Bio.Restriction import EcoRI, BamHI, HindIII, EagI, SacII, SmaI# Import additional enzymes here
+from Bio.Restriction import EcoRI, BamHI, HindIII, EagI, SacII, SmaI, KinI, XhoI# Import additional enzymes here
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.cluster.hierarchy import dendrogram, linkage
@@ -18,7 +18,7 @@ from sklearn.metrics import pairwise_distances
 folder_path = input("Enter the folder path containing DNA sequence FASTA files: ").strip()
 
 # List of available enzymes
-available_enzymes = [EcoRI, BamHI, HindIII, EagI, SacII, SmaI]  # Add more enzymes to the list as needed
+available_enzymes = [EcoRI, BamHI, HindIII, EagI, SacII, SmaI, KinI, XhoI]  # Add more enzymes to the list as needed
 
 # Print available enzymes and prompt the user to select one
 print("Available enzymes:")
