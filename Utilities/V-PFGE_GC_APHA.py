@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.cluster.hierarchy import dendrogram, linkage
 from sklearn.metrics import pairwise_distances
+import concurrent.futures
 
 # Prompt the user to enter the folder containing DNA sequence FASTA files
 folder_path = input("Enter the folder path containing DNA sequence FASTA files: ").strip()
@@ -48,16 +49,32 @@ fragment_sizes_dict = {}
 # Find the maximum fragment size in the dataset
 max_fragment_size = 0
 
-# Process each FASTA file in the folder
-for filename in os.listdir(folder_path):
-    if filename.endswith(".fasta") or filename.endswith(".fa"):
-        sequence_name = os.path.splitext(filename)[0]
-        sequence_path = os.path.join(folder_path, filename)
+# Function to process a single DNA sequence
+def process_sequence(filename):
+    sequence_name = os.path.splitext(filename)[0]
+    sequence_path = os.path.join(folder_path, filename)
 
-        with open(sequence_path, "r") as fasta_file:
-            dna_sequence = SeqIO.read(fasta_file, "fasta").seq
+    with open(sequence_path, "r") as fasta_file:
+        dna_sequence = SeqIO.read(fasta_file, "fasta").seq
 
-        fragment_sizes = simulate_pfge(dna_sequence, enzyme)
+    fragment_sizes = simulate_pfge(dna_sequence, enzyme)
+    
+    return sequence_name, fragment_sizes
+
+# Process each FASTA file in the folder in parallel
+with concurrent.futures.ThreadPoolExecutor() as executor:
+    # List of submitted tasks
+    tasks = []
+    
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".fasta") or filename.endswith(".fa"):
+            # Submit the task for processing
+            task = executor.submit(process_sequence, filename)
+            tasks.append(task)
+
+    # Retrieve the results of the completed tasks
+    for task in concurrent.futures.as_completed(tasks):
+        sequence_name, fragment_sizes = task.result()
         fragment_sizes_dict[sequence_name] = fragment_sizes
 
         # Update max_fragment_size if needed
@@ -106,3 +123,4 @@ ax2.set_yticks([])
 
 plt.tight_layout()
 plt.show()
+
