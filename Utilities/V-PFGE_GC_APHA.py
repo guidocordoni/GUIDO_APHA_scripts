@@ -88,12 +88,12 @@ for sequence_name in fragment_sizes_dict:
 # Convert fragment sizes to a matrix for clustering
 fragment_sizes_matrix = np.array(list(fragment_sizes_dict.values()))
 
-# Calculate pairwise Jaccard distances between sequences
-# Note: Jaccard distances are calculated based on presence/absence of fragments
-jaccard_distances = pairwise_distances(fragment_sizes_matrix > 0, metric='jaccard')
+# Calculate pairwise manhattan distances between sequences
+# Note: manhattan distances are calculated based on presence/absence of fragments
+manhattan_distances = pairwise_distances(fragment_sizes_matrix > 0, metric='manhattan')
 
-# Perform hierarchical clustering using the Jaccard distances and Ward's method
-linkage_matrix = linkage(jaccard_distances, method='ward')
+# Perform hierarchical clustering using the manhattan distances and average linkage method
+linkage_matrix = linkage(manhattan_distances, method='average')
 
 # Reorder the data based on dendrogram clustering order
 dendrogram_leaves = dendrogram(linkage_matrix, labels=list(fragment_sizes_dict.keys()), no_plot=True)
@@ -117,10 +117,9 @@ ax1.grid(axis='x', linestyle='--', alpha=0.6)
 
 # Plot the dendrogram on the right
 dendrogram(linkage_matrix, labels=reordered_sequence_names, orientation='right', ax=ax2, leaf_font_size=8, color_threshold=0.5)
-ax2.set_title('Dendrogram (Jaccard)')
+ax2.set_title('Dendrogram (manhattan)')
 ax2.set_xlabel('Distance')
 ax2.set_yticks([])
 
 plt.tight_layout()
 plt.show()
-
