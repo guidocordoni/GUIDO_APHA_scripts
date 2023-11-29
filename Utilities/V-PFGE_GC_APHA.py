@@ -1,27 +1,21 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Sep 20 10:31:08 2023
-
-@author: guidocordoni
-"""
-
 import os
 from Bio import SeqIO
-from Bio.Restriction import EcoRI, BamHI, HindIII, EagI, SacII, SmaI, KpnI, XhoI, ApaI, NarI, ClaI, NotI, XbaI, SpeI, AvrII# Import additional enzymes here
+from Bio.Restriction import EcoRI, BamHI, HindIII, EagI, SacII, SmaI, KpnI, XhoI, ApaI, NarI, ClaI, NotI, XbaI, SpeI, AvrII
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.cluster.hierarchy import dendrogram, linkage
 from sklearn.metrics import pairwise_distances
-import concurrent.futures
+from scipy.spatial.distance import squareform  # Import squareform function
+
+# Set seed for reproducibility
+np.random.seed(42)
 
 # Prompt the user to enter the folder containing DNA sequence FASTA files
 folder_path = input("Enter the folder path containing DNA sequence FASTA files: ").strip()
 
 # List of available enzymes
-available_enzymes = [EcoRI, BamHI, HindIII, EagI, SacII, SmaI, KpnI, XhoI, ApaI, NarI, ClaI, NotI, XbaI, SpeI, AvrII]  # Add more enzymes to the list as needed
+available_enzymes = [EcoRI, BamHI, HindIII, EagI, SacII, SmaI, KpnI, XhoI, ApaI, NarI, ClaI, NotI, XbaI, SpeI, AvrII]
 
-# Print available enzymes and prompt the user to select one
 print("Available enzymes:")
 for i, enzyme in enumerate(available_enzymes, 1):
     print(f"{i}. {enzyme.__name__}")
@@ -62,19 +56,9 @@ def process_sequence(filename):
     return sequence_name, fragment_sizes
 
 # Process each FASTA file in the folder in parallel
-with concurrent.futures.ThreadPoolExecutor() as executor:
-    # List of submitted tasks
-    tasks = []
-    
-    for filename in os.listdir(folder_path):
-        if filename.endswith(".fasta") or filename.endswith(".fa"):
-            # Submit the task for processing
-            task = executor.submit(process_sequence, filename)
-            tasks.append(task)
-
-    # Retrieve the results of the completed tasks
-    for task in concurrent.futures.as_completed(tasks):
-        sequence_name, fragment_sizes = task.result()
+for filename in os.listdir(folder_path):
+    if filename.endswith(".fasta") or filename.endswith(".fa"):
+        sequence_name, fragment_sizes = process_sequence(filename)
         fragment_sizes_dict[sequence_name] = fragment_sizes
 
         # Update max_fragment_size if needed
@@ -88,12 +72,16 @@ for sequence_name in fragment_sizes_dict:
 # Convert fragment sizes to a matrix for clustering
 fragment_sizes_matrix = np.array(list(fragment_sizes_dict.values()))
 
-# Calculate pairwise manhattan distances between sequences
-# Note: manhattan distances are calculated based on presence/absence of fragments
-manhattan_distances = pairwise_distances(fragment_sizes_matrix > 0, metric='manhattan')
+# Calculate pairwise dice distances between sequences
+# Note: dice distances are calculated based on presence/absence of fragments
+dice_distances = pairwise_distances(fragment_sizes_matrix > 0, metric='dice')
 
-# Perform hierarchical clustering using the manhattan distances and average linkage method
-linkage_matrix = linkage(manhattan_distances, method='average')
+# Convert to condensed distance matrix if it's not condensed
+if np.any(np.triu(dice_distances, k=1)):
+    dice_distances = squareform(dice_distances)
+
+# Perform hierarchical clustering using the dice distances and ward linkage method
+linkage_matrix = linkage(dice_distances, method='average')
 
 # Reorder the data based on dendrogram clustering order
 dendrogram_leaves = dendrogram(linkage_matrix, labels=list(fragment_sizes_dict.keys()), no_plot=True)
@@ -117,9 +105,10 @@ ax1.grid(axis='x', linestyle='--', alpha=0.6)
 
 # Plot the dendrogram on the right
 dendrogram(linkage_matrix, labels=reordered_sequence_names, orientation='right', ax=ax2, leaf_font_size=8, color_threshold=0.5)
-ax2.set_title('Dendrogram (manhattan)')
+ax2.set_title('Dendrogram (dice)')
 ax2.set_xlabel('Distance')
 ax2.set_yticks([])
 
+# Show the plot
 plt.tight_layout()
 plt.show()
