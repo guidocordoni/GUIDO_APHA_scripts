@@ -3,7 +3,7 @@
 #use: ./swapdrive.sh mount. To unmount ./swapdrive.sh unmount.
 # Warning: it will take the amount of space on your SCE hard drive according to the dimension you asked when creating the swapfile, and it will stay there even if not mounted. If you want to free up space from the hard drive unmount it and just delete the swapfile (rm swapfile). 
 
-SWAPFILE="/home/guidocordoni/Desktop/tmp/swapfile" #insert your path here
+SWAPFILE="/your/path/swapfile" #insert your path here
 
 function create_swap {
     read -p "Swap file $SWAPFILE does not exist. Do you want to create it? (yes/no) " choice
