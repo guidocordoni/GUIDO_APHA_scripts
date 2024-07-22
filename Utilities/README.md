@@ -29,3 +29,4 @@ Usage: python -i input_folder -o output folder. Use -h for help.
 13) conda_envs_lister.sh: makes a list of all packages in all conda envs and save it in a file called software.txt
 14) same_contig_genes_check.py: Using results from Abricate search if AMR or virulence profiles are located on the same contig for each isolate.
 15) minmaxavglineages.py: This script calculates the min, max and avg snp distances within and between lineages that you can visually see on a phylogenetic tree.
+16) swapfile.sh: This script will create and mount a swapfile to boost your memory in case you need to use memory demanding software (i.e. Bakta) and there is no SCE boost available. change the SWAPFILE path with your folder. If no swapfile is already present the script will create one for you (it will need sudo rights).
