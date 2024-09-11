@@ -3,7 +3,7 @@ import concurrent.futures
 from Bio import Entrez
 
 # Configure your email to use NCBI Entrez
-Entrez.email = "guido.cordoni@apha.gov.uk"  # Replace with your email
+Entrez.email = "your_email@example.com"  # Replace with your email
 
 # Step 1: Get all SRA Accessions from BioProject
 def get_sra_accessions(bioproject_id):
